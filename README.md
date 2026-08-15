@@ -1,8 +1,13 @@
-# AI Agent Restaurant Management
+# 🤖 AI Agent Restaurant Management
 
-An AI-powered restaurant management automation built with **n8n**.
+![n8n Workflows](https://img.shields.io/badge/Automation-n8n-FF6D5A?logo=n8n)
+![WhatsApp Integration](https://img.shields.io/badge/Messaging-WhatsApp-25D366?logo=whatsapp)
+![Database](https://img.shields.io/badge/Vector%20Store-Supabase-3ECF8E?logo=supabase)
+![Storage](https://img.shields.io/badge/Data%20Store-Google%20Sheets-34A853?logo=googlesheets)
 
-The system uses an AI Agent to handle customer interactions through WhatsApp, answer restaurant-related questions, create and manage orders, validate order information, and store confirmed orders.
+An autonomous end-to-end restaurant management system built on **n8n**. The system leverages an AI Router and specialized sub-assistants feeding into a central AI Agent to process WhatsApp conversations, handle dynamic menu Q&A via RAG, parse complex food choices (combos, sauces), build real-time carts, and manage order lifecycles—all stored seamlessly in Google Sheets.
+
+---
 
 ## Current Features
 
@@ -22,53 +27,57 @@ The system uses an AI Agent to handle customer interactions through WhatsApp, an
 ## Architecture
 
 ```text
-                         ┌──────────────────┐
-                         │     WhatsApp     │
-                         └────────┬─────────┘
-                                  │
-                                  ▼
-                         ┌──────────────────┐
-                         │     Webhook      │
-                         └────────┬─────────┘
-                                  │
-                                  ▼
-                         ┌──────────────────┐
-                         │    AI Router     │
-                         └────────┬─────────┘
-                                  │
-              ┌───────────────────┼───────────────────┐
-              │                   │                   │
-              ▼                   ▼                   ▼
-       ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-       │  Questions  │     │   Orders    │     │   General   │
-       │  Assistant  │     │  Assistant  │     │  Assistant  │
-       └─────────────┘     └──────┬──────┘     └─────────────┘
-                                  │
-                                  ▼
-                         ┌──────────────────┐
-                         │     AI Agent     │
-                         └────────┬─────────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    │                           │
-                    ▼                           ▼
-          ┌──────────────────┐        ┌─────────────────────────────┐
-          │  Knowledge Base  │        │       Order Tools           │
-          │                  │        │                             │
-          │ Supabase Vector  │        │  build_cart                 │
-          │      Store       │        │  Calculate_tool             │
-          └──────────────────┘        │  orders_generate_id         │
-                                      │  normalize_order_identity   │
-                                      │  validate_order_modification│
-                                      └────────────┬────────────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │  Google Sheets  │
-                                          │  Order Storage  │
-                                          └────────┬────────┘
-                                                   │
-                                                   ▼
-                                          ┌─────────────────┐
-                                          │ WhatsApp Reply  │
-                                          └─────────────────┘
+                           ┌──────────────────┐
+                           │     WhatsApp     │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │     Webhook      │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │    AI Router     │
+                           └────────┬─────────┘
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+              ▼                     ▼                     ▼
+       ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
+       │  Questions  │       │   Orders    │       │   General   │
+       │  Assistant  │       │  Assistant  │       │  Assistant  │
+       └──────┬──────┘       └──────┬──────┘       └──────┬──────┘
+              │                     │                     │
+              └─────────────────────┼─────────────────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │     AI Agent     │
+                           └────────┬─────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    │                               │
+                    ▼                               ▼
+          ┌──────────────────┐            ┌──────────────────┐
+          │  Knowledge Base  │            │   Order Tools    │
+          │                  │            │                  │
+          │ Supabase Vector  │            │ • build_cart     │
+          │      Store       │            │ • Calculate_tool │
+          └────────┬─────────┘            │ • generate_id    │
+                   │                      │ • normalize_id   │
+                   │                      │ • validate_mod   │
+                   │                      └────────┬─────────┘
+                   │                               │
+                   │                               ▼
+                   │                      ┌──────────────────┐
+                   │                      │  Google Sheets   │
+                   │                      │  (Order Storage) │
+                   │                      └────────┬─────────┘
+                   │                               │
+                   └────────────────┬──────────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │  WhatsApp Reply  │
+                           └──────────────────┘
